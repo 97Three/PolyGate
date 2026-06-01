@@ -1,0 +1,16 @@
+target/
+.m2/
+tools/
+tmp/
+.idea/
+*.log
+dashboard/node_modules/
+dashboard/dist/
+.npm/
+dashboard/test-results/
+dashboard/playwright-report/
+release/
+
+.env
+*.env
+!.env.example
