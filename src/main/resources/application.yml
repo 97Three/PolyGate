@@ -1,0 +1,35 @@
+server:
+  address: ${POLYGATE_BIND:127.0.0.1}
+  port: ${POLYGATE_PORT:18080}
+  max-http-request-header-size: 16KB
+  shutdown: graceful
+spring:
+  main:
+    web-application-type: servlet
+  codec:
+    max-in-memory-size: 2MB
+  lifecycle:
+    timeout-per-shutdown-phase: ${POLYGATE_SHUTDOWN_TIMEOUT:660s}
+  task:
+    scheduling:
+      pool:
+        size: 2
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+polygate:
+  database:
+    enabled: ${POLYGATE_DATABASE_ENABLED:false}
+    url: ${POLYGATE_DATABASE_URL:}
+    user: ${POLYGATE_DATABASE_USER:}
+    password: ${POLYGATE_DATABASE_PASSWORD:}
+  admin-bootstrap-password: ${POLYGATE_ADMIN_BOOTSTRAP_PASSWORD:}
+  client-token: ${POLYGATE_CLIENT_TOKEN:}
+  upstream-key: ${POLYGATE_UPSTREAM_KEY:}
+  upstream-base-url: ${POLYGATE_UPSTREAM_URL:http://127.0.0.1:19090}
+  upstream-allow-http-mock: ${POLYGATE_UPSTREAM_ALLOW_HTTP_MOCK:false}
+  public-model: ${POLYGATE_PUBLIC_MODEL:deepseek-flash}
+  upstream-model: ${POLYGATE_UPSTREAM_MODEL:deepseek-flash}
+  upstream-protocol: ${POLYGATE_UPSTREAM_PROTOCOL:anthropic}
