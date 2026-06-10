@@ -1,0 +1,2 @@
+ALTER TABLE gateway_request DROP CONSTRAINT gateway_request_user_id_fkey;
+ALTER TABLE gateway_request DROP CONSTRAINT gateway_request_api_key_id_fkey;
