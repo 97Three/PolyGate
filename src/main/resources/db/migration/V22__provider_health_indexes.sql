@@ -1,0 +1,2 @@
+CREATE INDEX gateway_attempt_provider_time_idx ON gateway_provider_attempt(provider_id,ended_at DESC);
+CREATE INDEX gateway_attempt_credential_time_idx ON gateway_provider_attempt(credential_id,ended_at DESC);
