@@ -1,0 +1,18 @@
+groups:
+  - name: polygate
+    rules:
+      - alert: PolyGateUnavailable
+        expr: up{job="polygate"} == 0
+        for: 2m
+        labels: {severity: critical}
+        annotations: {summary: "Java gateway or authenticated metrics endpoint unavailable"}
+      - alert: PolyGateRequestFailureRatio
+        expr: sum(rate(polygate_messages_total{state="failed"}[5m])) / clamp_min(sum(rate(polygate_messages_total[5m])), 0.001) > 0.2
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Gateway request failure ratio exceeds 20%"}
+      - alert: PolyGateLatencyHigh
+        expr: histogram_quantile(0.95, sum by (le) (rate(polygate_message_latency_seconds_bucket[5m]))) > 30
+        for: 5m
+        labels: {severity: warning}
+        annotations: {summary: "Gateway p95 latency exceeds 30 seconds"}

@@ -1,0 +1,41 @@
+name: polygate
+services:
+  postgres:
+    image: postgres:18.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: polygate
+      POSTGRES_USER: polygate
+      POSTGRES_PASSWORD: ${POLYGATE_DATABASE_PASSWORD:?Set database password in .env}
+    volumes:
+      - polygate-data:/var/lib/postgresql
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U polygate -d polygate]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+  gateway:
+    build: .
+    restart: unless-stopped
+    init: true
+    env_file: .env
+    environment:
+      POLYGATE_DATABASE_ENABLED: 'true'
+      POLYGATE_DATABASE_URL: jdbc:postgresql://postgres:5432/polygate
+      POLYGATE_DATABASE_USER: polygate
+      POLYGATE_BIND: 0.0.0.0
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=65
+    ports:
+      - 127.0.0.1:18080:18080
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,size=128m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    stop_grace_period: 670s
+volumes:
+  polygate-data:
