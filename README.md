@@ -1,13 +1,13 @@
-<p align="center">
-  <img src="assets/banner.svg" alt="PolyGate — a self-hosted model gateway" width="100%">
+﻿<p align="center">
+  <img src="assets/banner.svg" alt="PolyGate — 自托管多模型 API 网关" width="100%">
 </p>
 
 <p align="center">
-  <b>English</b> · <a href="README.zh-CN.md">简体中文</a>
+  <b>简体中文</b> · <a href="README.en.md">English</a>
 </p>
 
 <p align="center">
-  <strong>One gateway for every model.</strong> A self-hosted boundary for authentication, routing and billing in front of Anthropic Messages and OpenAI Chat Completions — with the admin console baked into the executable JAR.
+  <strong>所有模型，同一道闸门。</strong> 把 Anthropic Messages 与 OpenAI Chat Completions 收进同一套鉴权、路由与计费边界，管理台直接内嵌在可执行 JAR 里。
 </p>
 
 <p align="center">
@@ -22,61 +22,61 @@
 
 ---
 
-## Why PolyGate
+## 为什么需要它
 
-Working with several model providers is rarely about "calling an API". It is usually about keys scattered across clients, usage nobody can attribute, budgets nobody enforces, and incidents with no trace. PolyGate collapses all of that into one process:
+同时使用多家模型服务时，难点通常不是"调通 API"，而是：密钥散落在各个客户端、用量无法归集、预算没人兜底、出问题查不到链路。PolyGate 把这些收敛到一个进程：
 
-- **One entry point** — clients only hold one set of `POLYGATE_*` credentials; upstream keys stay on the server, with rotation and failover.
-- **Two protocols** — native Anthropic Messages and OpenAI Chat Completions, sharing the same routing, quota and logging path.
-- **Billable by design** — price snapshots, reservations, settlement and an append-only ledger for every call; over-budget requests are rejected before they reach the upstream.
-- **Governed** — tenant, project and environment scopes; model and provider grants; IP policy; dual approval; audit and retention.
-- **Observable** — Prometheus metrics, per-request traces and operational incidents; all 11 console pages talk to the real API.
+- **一个入口** —— 客户端只认一套 `POLYGATE_*` 凭证，上游密钥留在服务端，支持轮换与故障切换。
+- **两种协议** —— 原生支持 Anthropic Messages 与 OpenAI Chat Completions，共用同一条路由、配额与日志链路。
+- **可结算** —— 每次调用都有价格快照、预留、结算和只追加账本；超预算的请求在进入上游之前就被拒绝。
+- **可治理** —— 租户、项目、环境三级作用域，模型与 Provider 授权，IP 策略，双人审批，审计与数据留存。
+- **可观测** —— Prometheus 指标、请求级追踪、运维事件；管理台 11 个页面全部连接真实 API。
 
-## Architecture
+## 架构
 
 <p align="center">
-  <img src="assets/architecture.svg" alt="Request flow: clients → auth → protocol bridge → quota → routing → upstreams, with ledger and metrics written to PostgreSQL" width="100%">
+  <img src="assets/architecture.zh.svg" alt="请求链路：客户端 → 鉴权 → 协议转换 → 配额 → 路由 → 上游；账本与指标写入 PostgreSQL" width="100%">
 </p>
 
-Every request walks the same pipeline: authentication and tenant policy, protocol translation, quota and budget reservation, then routing with health checks and failover. Ledger entries, audit events and usage records are written to PostgreSQL; metrics and structured logs are emitted along the same path.
+每个请求都经过同一条流水线：鉴权与租户策略、协议转换、配额与预算预留，然后是带健康检查与故障切换的路由。账本、审计与用量记录写入 PostgreSQL，指标和结构化日志在同一条链路上产生。
 
-The whole gateway is a single Spring Boot process. The React console is built at package time and served from the JAR, so there is no Node runtime and no separate front-end container in production.
+整个网关是一个 Spring Boot 进程。React 管理台在打包阶段构建，由 JAR 直接提供，生产环境不需要 Node 运行时，也没有独立的前端容器。
 
-## Quick start
+## 快速开始
 
-### Docker Compose (recommended)
+### Docker Compose（推荐）
 
 ```bash
 cp .env.example .env
-# replace every replace-with-* placeholder: database password, admin bootstrap password, upstream key
+# 替换所有 replace-with-* 占位值：数据库密码、管理员初始密码、上游密钥
 docker compose up -d --build
 ```
 
-Then:
+启动后：
 
-- Console and API: <http://127.0.0.1:18080>
-- Health: <http://127.0.0.1:18080/actuator/health>
-- The first start creates the `admin` account from `POLYGATE_ADMIN_BOOTSTRAP_PASSWORD`
+- 管理台与 API：<http://127.0.0.1:18080>
+- 健康检查：<http://127.0.0.1:18080/actuator/health>
+- 首次启动会用 `POLYGATE_ADMIN_BOOTSTRAP_PASSWORD` 创建 `admin` 账号
 
-### Build from source
+### 本地构建
 
 ```bash
-# front end
+# 前端
 cd dashboard && npm ci && npm run build && cd ..
 
-# back end (the console bundle is packaged into the JAR)
+# 后端（前端产物会打进 JAR）
 ./mvnw -B verify
 java -jar target/polygate-1.0.0.jar
 ```
 
-On Windows, `.\scripts\build.ps1` pins the JDK, Node and Maven cache inside `tools/`, `.m2/` and `.npm/` so the host environment stays clean.
+Windows 上可直接执行 `.\scripts\build.ps1`，脚本会把 JDK、Node 与 Maven 缓存固定到项目内的 `tools/`、`.m2/`、`.npm/`，不污染系统环境。
 
-> Persistence is off by default. Set `POLYGATE_DATABASE_ENABLED=false` to run the gateway without PostgreSQL; when enabled, Flyway applies `src/main/resources/db/migration` automatically.
+> 数据库默认关闭。只跑网关、不接 PostgreSQL 时设置 `POLYGATE_DATABASE_ENABLED=false`；启用后 Flyway 会自动执行 `src/main/resources/db/migration` 下的迁移。
 
-## Client access
+## 客户端接入
 
 ```bash
-# Anthropic Messages
+# Anthropic Messages 协议
 curl http://127.0.0.1:18080/v1/messages \
   -H "x-api-key: $POLYGATE_CLIENT_TOKEN" \
   -H "anthropic-version: 2023-06-01" \
@@ -84,7 +84,7 @@ curl http://127.0.0.1:18080/v1/messages \
   -d '{"model":"deepseek:deepseek-v4-flash","max_tokens":256,
        "messages":[{"role":"user","content":"hello"}]}'
 
-# OpenAI Chat Completions
+# OpenAI Chat Completions 协议
 curl http://127.0.0.1:18080/v1/chat/completions \
   -H "Authorization: Bearer $POLYGATE_CLIENT_TOKEN" \
   -H "content-type: application/json" \
@@ -92,74 +92,74 @@ curl http://127.0.0.1:18080/v1/chat/completions \
        "messages":[{"role":"user","content":"hello"}]}'
 ```
 
-Both paths support SSE streaming, tool calls, images and reasoning fields. Fields that cannot be translated losslessly are rejected explicitly instead of being silently dropped.
+两条通道都支持 SSE 流式输出、工具调用、图片与推理字段；不能无损转换的字段会明确报错，而不是静默丢弃。
 
-| Endpoint | Description |
+| 端点 | 说明 |
 |---|---|
-| `POST /v1/messages` | Anthropic Messages, including streaming |
-| `POST /v1/messages/count_tokens` | Upstream token counting |
-| `POST /v1/chat/completions` | OpenAI Chat Completions, including streaming |
-| `GET /v1/models` | Models visible to the presented credential |
-| `GET /v1/effective-policy` | Effective policy for the caller |
-| `GET /livez` `/readyz` `/health` | Liveness and readiness probes |
-| `GET /metrics` | Prometheus metrics, protected by a bearer token |
+| `POST /v1/messages` | Anthropic Messages（含流式） |
+| `POST /v1/messages/count_tokens` | 上游 token 计数 |
+| `POST /v1/chat/completions` | OpenAI Chat Completions（含流式） |
+| `GET /v1/models` | 当前凭证可见的模型目录 |
+| `GET /v1/effective-policy` | 当前调用方的有效策略 |
+| `GET /livez` `/readyz` `/health` | 存活与就绪探针 |
+| `GET /metrics` | Prometheus 指标（Bearer token 保护） |
 
-## Configuration
+## 配置
 
-Everything is injected through environment variables; see [`.env.example`](.env.example) for the full list.
+所有配置通过环境变量注入，完整清单见 [`.env.example`](.env.example)。
 
-| Variable | Default | Purpose |
+| 变量 | 默认值 | 说明 |
 |---|---|---|
-| `POLYGATE_BIND` | `127.0.0.1` | Listen address; set `0.0.0.0` inside containers |
-| `POLYGATE_PORT` | `18080` | HTTP port |
-| `POLYGATE_DATABASE_ENABLED` | `false` | Enable PostgreSQL persistence |
-| `POLYGATE_DATABASE_URL` | — | JDBC URL; the database must be `polygate` or `polygate_<suffix>` |
-| `POLYGATE_ADMIN_BOOTSTRAP_PASSWORD` | — | Password for `admin` on a fresh database |
-| `POLYGATE_CLIENT_TOKEN` | — | Shared client token (prefer per-user API keys) |
-| `POLYGATE_UPSTREAM_URL` | `http://127.0.0.1:19090` | Default upstream base URL |
-| `POLYGATE_UPSTREAM_KEY` | — | Default upstream key |
-| `POLYGATE_UPSTREAM_PROTOCOL` | `anthropic` | `anthropic` or `openai_compat` |
-| `POLYGATE_APPROVED_UPSTREAM_HOSTS` | empty | Additional allowed upstream hosts, comma separated |
-| `POLYGATE_TRUSTED_PROXIES` | empty | Trusted proxy CIDRs; empty ignores forwarded headers |
-| `POLYGATE_OIDC_*` | empty | Enterprise SSO; disabled until configured |
+| `POLYGATE_BIND` | `127.0.0.1` | 监听地址，容器内需设为 `0.0.0.0` |
+| `POLYGATE_PORT` | `18080` | HTTP 端口 |
+| `POLYGATE_DATABASE_ENABLED` | `false` | 是否启用 PostgreSQL 持久化 |
+| `POLYGATE_DATABASE_URL` | — | JDBC URL，库名必须是 `polygate` 或 `polygate_<suffix>` |
+| `POLYGATE_ADMIN_BOOTSTRAP_PASSWORD` | — | 空库首次启动时创建 `admin` 的密码 |
+| `POLYGATE_CLIENT_TOKEN` | — | 客户端共享令牌（建议改为按用户发放 API Key） |
+| `POLYGATE_UPSTREAM_URL` | `http://127.0.0.1:19090` | 默认上游地址 |
+| `POLYGATE_UPSTREAM_KEY` | — | 默认上游密钥 |
+| `POLYGATE_UPSTREAM_PROTOCOL` | `anthropic` | `anthropic` 或 `openai_compat` |
+| `POLYGATE_APPROVED_UPSTREAM_HOSTS` | 空 | 额外放行的上游主机，逗号分隔 |
+| `POLYGATE_TRUSTED_PROXIES` | 空 | 可信反代 CIDR，为空时忽略所有转发头 |
+| `POLYGATE_OIDC_*` | 空 | 企业单点登录，未配置时自动关闭 |
 
-## Admin console
+## 管理控制台
 
-Served from the same JAR:
+管理台由同一 JAR 提供，覆盖：
 
-- **Overview** — traffic, latency, error rate, cost trend and health
-- **Models** — providers, credential pools, catalog, aliases, canary and shadow routing
-- **Users & keys** — users, teams, API key lifecycle, rotation and scope
-- **Quotas & budgets** — daily/weekly/monthly quotas, reservations, settlement and adjustments
-- **Request logs** — filter by status, model, latency or cost; drill into a single request
-- **Enterprise** — cost centers, budget events and tenant-level usage
-- **Governance** — project policy, egress boundaries, dual approval, audit and retention
-- **Operations** — incidents, feedback, recovery actions and optional budget-bounded analysis
-- **Settings** — runtime configuration, provider connectivity tests and hot reload
+- **概览** —— 请求量、延迟、错误率、成本趋势与健康状态
+- **模型接入** —— Provider、凭证池、模型目录、别名、灰度与影子路由
+- **用户与密钥** —— 用户、团队、API Key 生命周期与轮换、权限作用域
+- **配额与预算** —— 日/周/月配额、预算预留与结算、调整流水
+- **请求日志** —— 按状态、模型、延迟、成本过滤，单请求下钻
+- **企业** —— 成本中心、预算事件、租户维度用量
+- **治理** —— 项目策略、出站边界、双人审批、审计与留存
+- **运维** —— 事件、反馈、恢复动作、受预算约束的模型分析（默认关闭）
+- **设置** —— 运行时配置、Provider 连通性测试、配置热加载
 
-## Observability
+## 可观测性
 
-`deploy/observability/` ships Prometheus scrape config, alert rules and a Grafana dashboard. `/metrics` exposes request volume, tokens, latency buckets, rejection reasons and ledger operations. Troubleshooting steps live in the [runbook](deploy/observability/RUNBOOK.md).
+`deploy/observability/` 提供 Prometheus 抓取配置、告警规则和 Grafana 面板；`/metrics` 暴露请求量、token、延迟分位、拒绝原因、账本操作等指标。排障步骤见 [RUNBOOK](deploy/observability/RUNBOOK.md)。
 
-## Project layout
+## 项目结构
 
 ```text
-src/main/java/dev/polygate/       gateway, routing, billing, governance, admin API
-src/main/resources/db/migration/ Flyway migrations (V1 → V23)
-src/main/resources/schemas/      JSON Schema for runtime adapters
-dashboard/                       React 19 + Vite console
-deploy/observability/            Prometheus / Grafana / runbook
-scripts/                         build, deploy, backup and verification scripts
+src/main/java/dev/polygate/      网关、路由、计费、治理、管理端 API
+src/main/resources/db/migration/ Flyway 迁移（V1 → V23）
+src/main/resources/schemas/      Runtime Adapter 的 JSON Schema
+dashboard/                       React 19 + Vite 控制台
+deploy/observability/            Prometheus / Grafana / Runbook
+scripts/                         构建、部署、备份、验收脚本
 ```
 
-## Development
+## 开发与测试
 
 ```bash
-./mvnw -B verify                 # Java unit + integration tests (embedded PostgreSQL)
-cd dashboard && npm run check    # typecheck + ESLint + Vitest + production build
+./mvnw -B verify                 # Java 单测 + 集成测试（内嵌 PostgreSQL）
+cd dashboard && npm run check    # 类型检查 + ESLint + Vitest + 生产构建
 ```
 
-End-to-end checks run with Playwright against a live backend:
+端到端验收用 Playwright，可对真实 Java 后端逐页验证：
 
 ```bash
 cd dashboard
@@ -167,15 +167,15 @@ PLAYWRIGHT_BASE_URL=http://127.0.0.1:18080 \
 PLAYWRIGHT_SKIP_WEBSERVER=1 npm run e2e:java
 ```
 
-The `scripts/verify-*.ps1` suites exercise permissions, budgets, approval, transport, fallback and operations against an isolated database and a mock upstream.
+`scripts/verify-*.ps1` 系列在隔离库和本地模拟上游上验收权限、预算、审批、传输、回退与运维流程。
 
-## Security baseline
+## 安全基线
 
-- Non-root container, read-only root filesystem, all capabilities dropped
-- Argon2id admin passwords, login rate limiting, CSRF, session cookies and optional OIDC
-- Client credentials stored as hashes only; upstream keys referenced through environment variables
-- Hard limits on request size, concurrency, timeouts and retries
-- Dual approval and full audit for high-risk changes such as budgets, policy and credentials
+- 容器以非 root 用户运行、只读根文件系统、丢弃全部 capability
+- 管理端密码使用 Argon2id，登录限速、CSRF、会话 Cookie 与可选 OIDC
+- 客户端凭证只存哈希；上游密钥通过环境变量引用，不落库
+- 请求体大小、并发、超时与重试均有硬上限
+- 高风险变更（预算、策略、凭证）支持双人审批与完整审计
 
 ## License
 
