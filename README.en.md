@@ -177,6 +177,23 @@ The `scripts/verify-*.ps1` suites exercise permissions, budgets, approval, trans
 - Hard limits on request size, concurrency, timeouts and retries
 - Dual approval and full audit for high-risk changes such as budgets, policy and credentials
 
+## Troubleshooting
+
+**`Port 18080 was already in use`**
+Set `POLYGATE_PORT` to a free port, or stop the process holding 18080 and restart.
+
+**`Database name must be polygate or polygate_<suffix>`**
+This is an isolation guard: the gateway only accepts `polygate` or a database with an explicit suffix, so it cannot point at another project's data by accident.
+
+**Upstream returns 401 / 403**
+Check that the key matches the protocol: the `anthropic` channel sends `x-api-key`, the `openai_compat` channel sends `Authorization: Bearer`. Also confirm the key has not expired or been rotated.
+
+**Streaming responses arrive as one chunk**
+A reverse proxy is buffering SSE. In Nginx, turn off `proxy_buffering` and raise `proxy_read_timeout` above the longest generation time.
+
+**Admin login returns 401 after resetting the database**
+`POLYGATE_ADMIN_BOOTSTRAP_PASSWORD` is only applied on the first start against an empty database. Existing databases are never reset; sign in with the original password or update it manually.
+
 ## License
 
 [MIT](LICENSE)
