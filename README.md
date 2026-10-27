@@ -177,6 +177,23 @@ PLAYWRIGHT_SKIP_WEBSERVER=1 npm run e2e:java
 - 请求体大小、并发、超时与重试均有硬上限
 - 高风险变更（预算、策略、凭证）支持双人审批与完整审计
 
+## 故障排查
+
+**端口被占用：`Port 18080 was already in use`**
+换一个空闲端口 `POLYGATE_PORT=18081`，或先停掉占用 18080 的进程再重启。
+
+**启动失败：`Database name must be polygate or polygate_<suffix>`**
+这是隔离保护：网关只接受 `polygate` 或带明确后缀的库名，避免误连其他项目的数据库。
+
+**上游返回 401 / 403**
+确认密钥与协议匹配：`anthropic` 通道使用 `x-api-key`，`openai_compat` 通道使用 `Authorization: Bearer`；同时检查密钥是否已过期或被轮换。
+
+**流式响应被一次性返回**
+反向代理缓冲了 SSE。Nginx 需要关闭 `proxy_buffering`，并把 `proxy_read_timeout` 放宽到大于最长的生成时间。
+
+**空库重置后管理员登录 401**
+`POLYGATE_ADMIN_BOOTSTRAP_PASSWORD` 只在空库首次启动时生效；已有数据库不会重置密码，需要用原密码登录或手动更新。
+
 ## License
 
 [MIT](LICENSE)
