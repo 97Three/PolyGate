@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible problem in the gateway or the console
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report. Please do not paste API keys, tokens, database dumps or full `docker inspect` output.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened
+      description: Include the endpoint, status code and the relevant log line.
+      placeholder: |
+        POST /v1/messages -> 500
+        <log line here>
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. docker compose up -d --build
+        2. configure a provider in the console
+        3. send a request to ...
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - Anthropic Messages
+        - OpenAI Chat Completions
+        - Admin console
+        - Billing and quotas
+        - Deployment
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v1.0.0 / a4b5570
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, JDK, deployment method and database version
+      placeholder: Windows 11, JDK 21, docker compose, PostgreSQL 18
