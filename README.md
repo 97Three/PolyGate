@@ -1,12 +1,20 @@
-# PolyGate
+<p align="center">
+  <img src="assets/banner.svg" alt="PolyGate — 自托管多模型 API 网关" width="100%">
+</p>
 
-**自托管的多模型 API 网关**：用一套统一的鉴权、路由与计费边界，把 Anthropic Messages 和 OpenAI Chat Completions 接到任意上游供应商，并自带可执行 JAR 内嵌的管理控制台。
+<p align="center">
+  <strong>自托管的多模型 API 网关</strong>：一套统一的鉴权、路由与计费边界，把 Anthropic Messages 和 OpenAI Chat Completions 接到任意上游供应商，并自带可执行 JAR 内嵌的管理控制台。
+</p>
 
-[![Java](https://img.shields.io/badge/Java-21-2f6f8f)](https://adoptium.net/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-3f8f5f)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-19-c2536b)](https://react.dev/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-336791)](https://www.postgresql.org/)
-[![License](https://img.shields.io/badge/License-MIT-1d2433)](LICENSE)
+<p align="center">
+  <a href="https://github.com/97Three/polygate/actions/workflows/verify-release.yml"><img src="https://img.shields.io/github/actions/workflow/status/97Three/polygate/verify-release.yml?style=flat-square&label=build" alt="Build"></a>
+  <img src="https://img.shields.io/badge/Java-21-E76F00?style=flat-square&logo=openjdk&logoColor=white" alt="Java 21">
+  <img src="https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot 3.5">
+  <img src="https://img.shields.io/badge/PostgreSQL-18-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL 18">
+  <img src="https://img.shields.io/badge/React-19-087EA4?style=flat-square&logo=react&logoColor=white" alt="React 19">
+  <img src="https://img.shields.io/badge/TypeScript-6-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript 6">
+  <img src="https://img.shields.io/badge/License-MIT-C2536B?style=flat-square" alt="MIT">
+</p>
 
 ---
 

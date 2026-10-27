@@ -1,0 +1,82 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" fill="none" role="img" aria-label="PolyGate — unified model gateway">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b0f17"/>
+      <stop offset="0.55" stop-color="#0d121c"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="rule" x1="80" y1="0" x2="200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c2536b"/>
+      <stop offset="1" stop-color="#c2536b" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="cardStroke" x1="800" y1="88" x2="1200" y2="278" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.04"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="#ffffff" stroke-opacity="0.035"/>
+    </pattern>
+    <filter id="blurL" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+    <filter id="blurS" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="42"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="340" fill="url(#bg)"/>
+  <rect width="1280" height="340" fill="url(#grid)"/>
+  <circle cx="1120" cy="20" r="190" fill="#2f6f8f" fill-opacity="0.30" filter="url(#blurL)"/>
+  <circle cx="110" cy="340" r="200" fill="#c2536b" fill-opacity="0.22" filter="url(#blurL)"/>
+  <circle cx="640" cy="-60" r="150" fill="#d98324" fill-opacity="0.12" filter="url(#blurS)"/>
+
+  <g font-family="'JetBrains Mono', Consolas, 'SFMono-Regular', monospace">
+    <text x="80" y="74" font-size="11" letter-spacing="4.2" fill="#e06a86">POLYGATE</text>
+    <text x="1200" y="74" font-size="10" letter-spacing="2.6" fill="#5d6878" text-anchor="end">SELF-HOSTED</text>
+  </g>
+
+  <text x="80" y="152" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="68" font-weight="700" letter-spacing="-2.2" fill="#f6f1e8">PolyGate</text>
+  <rect x="80" y="172" width="96" height="2" fill="url(#rule)"/>
+
+  <text x="80" y="208" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="19" fill="#a8b2c1">One gateway for every model.</text>
+
+  <g font-family="'JetBrains Mono', Consolas, monospace" font-size="10" letter-spacing="1.2">
+    <rect x="80" y="232" width="86" height="28" rx="14" stroke="#2b3444"/>
+    <text x="123" y="250" fill="#c7d0dc" text-anchor="middle">JAVA 21</text>
+    <rect x="174" y="232" width="132" height="28" rx="14" stroke="#2b3444"/>
+    <text x="240" y="250" fill="#c7d0dc" text-anchor="middle">SPRING BOOT 3.5</text>
+    <rect x="314" y="232" width="122" height="28" rx="14" stroke="#2b3444"/>
+    <text x="375" y="250" fill="#c7d0dc" text-anchor="middle">POSTGRESQL 18</text>
+    <rect x="444" y="232" width="92" height="28" rx="14" stroke="#2b3444"/>
+    <text x="490" y="250" fill="#c7d0dc" text-anchor="middle">REACT 19</text>
+  </g>
+
+  <text x="80" y="298" font-family="'JetBrains Mono', Consolas, monospace" font-size="10" letter-spacing="1" fill="#5d6878">github.com/97Three/polygate</text>
+
+  <rect x="800" y="88" width="400" height="190" rx="16" fill="#0e131d" fill-opacity="0.92"/>
+  <rect x="800.5" y="88.5" width="399" height="189" rx="15.5" stroke="url(#cardStroke)"/>
+
+  <g font-family="'JetBrains Mono', Consolas, monospace">
+    <text x="824" y="116" font-size="9" letter-spacing="2.4" fill="#5d6878">SYSTEM</text>
+    <circle cx="1176" cy="112" r="3" fill="#3f8f6a"/>
+
+    <text x="824" y="154" font-size="9" letter-spacing="1.8" fill="#6b7688">UPSTREAM</text>
+    <text x="1176" y="154" font-size="11" fill="#dbe2ec" text-anchor="end">anthropic · openai</text>
+    <path d="M824 168H1176" stroke="#1b2230"/>
+
+    <text x="824" y="196" font-size="9" letter-spacing="1.8" fill="#6b7688">STORAGE</text>
+    <text x="1176" y="196" font-size="11" fill="#dbe2ec" text-anchor="end">postgres · flyway</text>
+    <path d="M824 210H1176" stroke="#1b2230"/>
+
+    <text x="824" y="238" font-size="9" letter-spacing="1.8" fill="#6b7688">CONSOLE</text>
+    <text x="1176" y="238" font-size="11" fill="#dbe2ec" text-anchor="end">react · vite</text>
+  </g>
+
+  <g font-family="'JetBrains Mono', Consolas, monospace" font-size="10" letter-spacing="1" fill="#5d6878">
+    <text x="800" y="298">MIT</text>
+    <text x="1200" y="298" text-anchor="end">v1.0.0</text>
+  </g>
+
+  <path d="M0 0H1280" stroke="#ffffff" stroke-opacity="0.06"/>
+  <path d="M0 339H1280" stroke="#ffffff" stroke-opacity="0.06"/>
+</svg>
